@@ -1,0 +1,163 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Chatty</title>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.ui.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="chat-style.css">
+
+    <script src="assets/flashcanvas.js"></script>
+
+    <script src="assets/jquery.signaturepad.js"></script>
+
+    <script src="assets/json2.min.js"></script>
+
+    <script type="text/javascript" src="chatModule.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+
+    <link href="assets/jquery.signaturepad.css?version=50" rel="stylesheet">
+
+    <link href="assets/flashcanvas.swf" />
+
+    <script type="text/javascript">
+
+    
+
+
+     var tags = [
+          // tag for user name
+         {
+             
+              type: "input",
+              tag: "text",
+              name: "name",
+             "chat-msg": "ברוך הבא לצ'ט שלנו. מה שמך ? "
+
+         },
+
+          // tag for id number
+          {
+                type: "input",
+                tag: "text",
+                name: "id",
+                "chat-msg": "שלום {{name}} , הכנס מספר תעודת זהות בבקשה",
+                validator: Chat.isValidIsraeliID,
+                invalid: "מספר תעודת זהות לא תקין"
+          },
+          // tag for email address
+          {
+              type: "input",
+              tag: "text",
+              name: "email",
+              "chat-msg": "הכנס כתובת דואר אלקטרוני",
+              validator: Chat.ValidateEmail,
+              invalid: "כתובת אימייל לא תקינה"
+          },
+          //tag for digital signature
+          {
+              type: "input",
+              tag: "custom",
+              name: "signPad",
+              submitBarStyle: 'full-submit',
+              "chat-msg": "נא לחתום באמצעות העכבר  ",
+              renderer: Chat.signPadRender,
+              retriever: Chat.signPadRetriever
+              
+          },
+           //tag for upload image from the user
+          {
+              type: "input",
+              tag: "custom",
+              name: "uploadImage",
+              submitBarStyle: 'full-submit',
+              "chat-msg": "העלאת תמונה",
+              renderer: Chat.uploadImageRender,
+              retriever: Chat.uploadImageRetriever
+            },
+          //tag for upload image inside robot message body , put your image in data folder
+          {
+              type: "msg",
+              tag: "text",
+              name:"robotUpload",
+              "chat-msg": "תמונה",
+              ImageUrl: "./data/image.jpg",
+              content: Chat.imageFromRobotContent
+              
+          },
+           //Tag for selecting options from the user
+          {
+
+                type: "input",
+                tag: "radio",
+                name: "selected",
+                "chat-msg": "אנא בחר אחת מן האופציות , מה אתה אוהב  לאכול?",
+                children: [{
+                    value:  "בננה",
+                    text: "בננה"
+                },
+                {
+                    value: "בורקס",
+                    text: "בורקס"
+                },
+                {
+                    value: "תפוח",
+                    text: "תפוח"
+                }
+              ],
+
+              success: function (data) {
+                  var msg = "";
+                  if (data.selected == "בננה")
+                      msg = "כל הכבוד חשוב להיות בריא";
+                  else if (data.selected == "בורקס")
+                      msg = "בורקס זה טעים אבל לא בריא";
+                  else
+                      msg = "לאכול תפוח זה בריא";
+
+                  Chat.addTags([{
+                      type: "msg",
+                      "chat-msg":msg
+                   }])
+              }
+
+            },
+          //the last tag
+          {
+              type: "msg",
+              "chat-msg": "שלום ולהתראות",
+              callback: function () {
+                  setTimeout(function () {
+                      $('#Chatform').submit();
+                  }, 2000);
+                  
+              }
+          }
+     ];
+
+    $(document).ready(function () {
+        Chat.start($('#chat-context'), tags);
+    });
+
+    </script>
+
+</head>
+
+<body>
+    <form id="Chatform" name="Chatform" data-ajax="false" method="post" runat="server"
+           action="http://localhost:3080/">
+        <div id="chat-context"></div>
+    </form>
+</body>
+</html>
