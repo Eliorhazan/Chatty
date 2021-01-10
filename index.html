@@ -43,7 +43,7 @@
               type: "input",
               tag: "text",
               name: "name",
-             "chat-msg": "ברוך הבא לצ'ט שלנו. מה שמך ? "
+             "chat-msg": "ברוך הבא לצ'ט . מה שמך ? "
 
          },
 
@@ -156,7 +156,7 @@
 
 <body>
     <form id="Chatform" name="Chatform" data-ajax="false" method="post" runat="server"
-           action="http://localhost:3080/">
+        enctype="multipart/form-data"   action="http://localhost:3080/">
         <div id="chat-context"></div>
     </form>
 </body>
