@@ -12,7 +12,7 @@
 .sigPad {
   margin: 0;
   padding: 0;
-  width:430px;
+ 
 }
 
 .sigPad label {
@@ -139,8 +139,27 @@
 
   border: 1px solid #ccc;
 }
-
+@media   (min-width: 500px)  {
+  .sigWrapper.current {
+    width: fit-content;
+    border-color: #666;
+  }
+}
+@media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {
+    .sigPad{
+      position: relative;
+      margin-bottom: -90px;
+    }
+    .pad{
+      height: 110px;
+      width: fit-content;
+    }
+    .sigNav a{
+      font-size:small;
+    }
+}
 .sigWrapper.current {
+ 
   border-color: #666;
 }
 
