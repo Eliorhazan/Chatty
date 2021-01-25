@@ -11,7 +11,8 @@
   var curTag;
   var textResponse;
   var msgDelay = 1000;
-
+  var backButton;
+  var clickCounter =0 ;
   self.start = function (ctx, tgs) {
     context = ctx;
     tags = tgs;
@@ -21,14 +22,18 @@
     context.empty();
     context.addClass("chat-context");
     context.append(
-      '<div id="chat"></div><div id="ui-control"></br><button id="back">חזור שאלה</button><div id="ui-options"></div>' +
+      '<div id="chat"></div><div id="ui-control"><button id="back">חזור שאלה</button><div id="ui-options"></div>' +
         '<div id="ui-response"><input id="response-text" /><div id="ui-submit"><i style="color:black;" class="fas fa-arrow-up"></i></div></div></div>'
     );
     chat = $("#chat");
-    var backButton = $("#back");
+    backButton = $("#back");
     textResponse = $("#response-text");
     uiOptions = $("#ui-options");
-
+    // $(window).on('resize', function(){
+    //     var win = $(this); //this = window
+    //     if (win.width() <= 1130) { uiOptions.css("top", "-250px"); }
+    //     if (win.width() <= 700) { uiOptions.css("top", "-150px"); }
+    // });
     $("#ui-submit").click(submitInput);
     uiOptions.on("ChatResponseLoaded", function (e) {
         
@@ -61,8 +66,7 @@
     nextTag();
   };
   var buttonBack = function (e) {
-      //var curTagIndex = next;
-      
+      clickCounter++;
       e.preventDefault();
       nextTag(true);
   }
@@ -120,12 +124,27 @@
           curTag.name +
           '" style="display:none" name= ' +
           curTag.name +
-          " value=" +
-          msg +
           " /> "
       );
-    }
 
+      if($('input[name='+curTag.name+']').val() != null){
+        $('input[name='+curTag.name+']').remove();
+        $("#Chatform").append(
+            '<input id="id_' +
+              curTag.name +
+              '" style="display:none" name= ' +
+              curTag.name +
+              " /> "
+          );
+          $('input[name='+curTag.name+']').val(data[curTag.name])
+
+        }else{
+            $('input[name='+curTag.name+']').val(data[curTag.name])
+        }
+    
+    }
+    
+    
     if (contentFn != "") {
       renderAdditionalContent(
         contentFn,
@@ -196,26 +215,19 @@
 
     if(isPreTag){
         next = next-2;
-        //alert(next);
-       // uiOptions.trigger("ChatResponseLoaded");
-        //$("#ui-options").remove();
+
         if(tags[next].type == "msg"){
             next = next-1;
         }
         $(".chat-response.robot").last().remove();
-        // if(curTag.name == "signPad"){
-        //     $('#signPad').remove();
-        // }
+
         $(`#${curTag.name}`).remove();
         if(curTag.name == 'selected'){
             removeOptions();
         }
-        //$('#signPad').remove();
+        textResponse.prop('disabled', false); 
         textResponse.attr("readonly", false);
-
-        
-        //textResponse.prop('disabled', false); 
-        //filterOptions();
+        //backButton.prop('disabled', true);
     }
     waiting = false;
     curTag = tags[next++];
@@ -272,7 +284,7 @@
     }
 
     if (curTag.callback) {
-      curTag.callback(data);
+       curTag.callback(data);
     }
   };
 
@@ -334,8 +346,9 @@
     if (Array.isArray(friendlySelected)) {
       friendlySelected = friendlySelected.join(", ");
     }
-
+    
     data[curTag.name] = selected;
+
     if (curTag.name == "signPad") {
       addResponse(false, friendlySelected, function () {
         return data[curTag.name];
@@ -344,7 +357,8 @@
       addResponse(false, friendlySelected, function () {
         return data[curTag.name];
       });
-    } else addResponse(false, friendlySelected);
+    } 
+    else addResponse(false, friendlySelected);
 
     textResponse.val(null);
     removeOptions();
@@ -356,6 +370,7 @@
     if (next < tags.length) {
       window.setTimeout(nextTag, msgDelay);
     }
+    
   };
 
   //function for external to be able to add tags
@@ -404,9 +419,17 @@
             "</p></div>"
         );
     }
+
     //var width = window.innerWidth();
-    uiOptions = (next<3 && window.innerWidth>760) ? uiOptions.css("top", "-240px") : uiOptions.css("top", "0px");
-    //uiOptions.hide();
+    if(next==1 && window.innerWidth>768 ){
+        uiOptions.css("top", "-320px")
+    }else if (next==2 && window.innerWidth>768 && clickCounter<1 ){
+        uiOptions.css("top", "-200px");
+    }else if (clickCounter==1  && window.innerWidth>768){
+        
+        uiOptions.css("top", "-100px");
+    }else uiOptions.css("top", "0px");
+
   };
 
   self.ValidateEmail = function (mail) {
@@ -461,6 +484,7 @@
   };
 
   self.uploadImageRender = function () {
+   
     $("#ui-control").prepend(
       '<div style="direction:rtl" id="uploadImage"></div>'
     );
@@ -475,12 +499,12 @@
         curTag.name +
         '" style="display:none;padding-right:10px; "  src="#" alt="your image" height=60 width=60>'
     );
-
+    
     var img = "";
     document
       .querySelector("input[name=" + curTag.name + "]")
       .addEventListener("change", function () {
-         
+        
         $("#img_" + curTag.name).show();
 
         if (this.files && this.files[0]) {
