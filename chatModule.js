@@ -421,14 +421,14 @@
     }
 
     //var width = window.innerWidth();
-    if(next==1 && window.innerWidth>768 ){
-        uiOptions.css("top", "-320px")
-    }else if (next==2 && window.innerWidth>768 && clickCounter<1 ){
-        uiOptions.css("top", "-200px");
-    }else if (clickCounter==1  && window.innerWidth>768){
+    // if(next==1 && window.innerWidth>768 ){
+    //     uiOptions.css("top", "-320px")
+    // }else if (next==2 && window.innerWidth>768 && clickCounter<1 ){
+    //     uiOptions.css("top", "-200px");
+    // }else if (clickCounter==1  && window.innerWidth>768){
         
-        uiOptions.css("top", "-100px");
-    }else uiOptions.css("top", "0px");
+    //     uiOptions.css("top", "-100px");
+    // }else uiOptions.css("top", "0px");
 
   };
 

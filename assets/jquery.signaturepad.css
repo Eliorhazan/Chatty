@@ -139,7 +139,11 @@
 
   border: 1px solid #ccc;
 }
-
+@media only screen and (max-device-width: 400px){
+  .pad{
+    width: 355px;
+  }
+} 
 @media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {
     .sigPad{
       position: relative;
