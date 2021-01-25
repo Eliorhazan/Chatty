@@ -50,6 +50,15 @@
 
     <script type="text/javascript">
       var tags = [
+
+        // tag for user name
+
+        {
+          type: "input",
+          tag: "text",
+          name: "name",
+          "chat-msg": "ברוך הבא לצ'ט . מה שמך ? ",
+        },
         // tag for input number number
         {
           type: "input",
@@ -61,63 +70,54 @@
           min: 10,
           max: 20,
         },
-        // // tag for user name
+        // tag for id number
+        {
+          type: "input",
+          tag: "text",
+          name: "id",
+          "chat-msg": "שלום {{name}} , הכנס מספר תעודת זהות בבקשה",
+          validator: Chat.isValidIsraeliID,
+          invalid: "מספר תעודת זהות לא תקין",
+        },
 
-        // {
-        //   type: "input",
-        //   tag: "text",
-        //   name: "name",
-        //   "chat-msg": "ברוך הבא לצ'ט . מה שמך ? ",
-        // },
-
-        // // tag for id number
-        // {
-        //   type: "input",
-        //   tag: "text",
-        //   name: "id",
-        //   "chat-msg": "שלום {{name}} , הכנס מספר תעודת זהות בבקשה",
-        //   validator: Chat.isValidIsraeliID,
-        //   invalid: "מספר תעודת זהות לא תקין",
-        // },
-
-        // //tag for upload image from the user
-        // {
-        //   type: "input",
-        //   tag: "custom",
-        //   name: "uploadImage",
-        //   submitBarStyle: "full-submit",
-        //   "chat-msg": "העלאת תמונה",
-        //   renderer: Chat.uploadImageRender,
-        //   retriever: Chat.uploadImageRetriever,
-        // },
-        // //tag for upload image inside robot message body , put your image in data folder
-        // {
-        //   type: "msg",
-        //   tag: "text",
-        //   name: "robotUpload",
-        //   "chat-msg": "תמונה",
-        //   ImageUrl: "./data/image.jpg",
-        //   content: Chat.imageFromRobotContent,
-        // },
-        // // tag for email address
-        // {
-        //   type: "input",
-        //   tag: "text",
-        //   name: "email",
-        //   "chat-msg": "הכנס כתובת דואר אלקטרוני",
-        //   validator: Chat.ValidateEmail,
-        //   invalid: "כתובת דואר אלקטרוני לא תקינה , נסה שוב",
-        // },
-        // //tag for digital signature
-        // {
-        //   type: "input",
-        //   tag: "custom",
-        //   name: "signPad",
-        //   submitBarStyle: "full-submit",
-        //   "chat-msg": "נא לחתום באמצעות העכבר  ",
-        //   renderer: Chat.signPadRender,
-        //   retriever: Chat.signPadRetriever,
-        // },
+        //tag for upload image from the user
+        {
+          type: "input",
+          tag: "custom",
+          name: "uploadImage",
+          submitBarStyle: "full-submit",
+          "chat-msg": "העלאת תמונה",
+          renderer: Chat.uploadImageRender,
+          retriever: Chat.uploadImageRetriever,
+        },
+        //tag for upload image inside robot message body , put your image in data folder
+        {
+          type: "msg",
+          tag: "text",
+          name: "robotUpload",
+          "chat-msg": "תמונה",
+          ImageUrl: "./data/image.jpg",
+          content: Chat.imageFromRobotContent,
+        },
+        // tag for email address
+        {
+          type: "input",
+          tag: "text",
+          name: "email",
+          "chat-msg": "הכנס כתובת דואר אלקטרוני",
+          validator: Chat.ValidateEmail,
+          invalid: "כתובת דואר אלקטרוני לא תקינה , נסה שוב",
+        },
+        //tag for digital signature
+        {
+          type: "input",
+          tag: "custom",
+          name: "signPad",
+          submitBarStyle: "full-submit",
+          "chat-msg": "נא לחתום באמצעות העכבר  ",
+          renderer: Chat.signPadRender,
+          retriever: Chat.signPadRetriever,
+        },
         //Tag for selecting options from the user
         {
           type: "input",
@@ -221,6 +221,7 @@
             }
           },
         },
+        
         //the last tag
         {
           type: "msg",

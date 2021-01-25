@@ -233,8 +233,7 @@ body {
 #ui-options {
     flex-wrap: wrap;
     position: relative;
-    /* top:-300px; */
-    right: 30px;
+  
     display: flex;
     justify-content: flex-start;
     padding: 3px;
@@ -246,6 +245,7 @@ body {
     padding: 0em;
 }
 #back{
+    
 	width:100px;
 	height:40px;
 	background-color:#FFFF99;
@@ -390,6 +390,9 @@ body {
     .chat-response {
         padding: 0.7em;
     }
+    #ui-submit:hover{
+        background-color:white;
+    }
     #ui-response.full-submit #ui-submit{
        
         font-size: 25px;
@@ -414,6 +417,9 @@ body {
     }
     #back{
         margin-top: 10px;
+    }
+    #ui-submit:hover{
+        background-color:white;
     }
     #ui-options {
         position: relative;

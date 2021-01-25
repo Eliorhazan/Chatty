@@ -108,16 +108,23 @@
     }
   };
 
-  function appendResponse(isRobot, msg, contentFn) {
-    var chatResponse = $(' <div class="chat-response ' +
-      (isRobot ? "robot " : "user") +
-      '"><p>' +
-      msg +
-      '</p><div class="add-content"></div></div>');
+function appendResponse(isRobot, msg, contentFn) {
+    var chatResponse = $(` <div class="chat-response ${isRobot ? "robot " : "user"}">
+    <p>${msg}</p>
+    <div  class="add-content"></div></div><div id="add_content_${curTag.name}"></div>`);
+    
 
     chat.append(chatResponse);
     
-    
+    if (curTag.tag =="radio" && isRobot) {
+        textResponse.prop('disabled', true);  
+        addOptions(curTag.children);
+        addContent = $(`#add_content_${curTag.name}`);
+        addContent.append(uiOptions);
+        $("#back").css('margin-bottom','17px');
+        chat.append(addContent);
+    }
+
     if (!isRobot && (curTag.tag == "text" || curTag.tag == "radio")) {
       $("#Chatform").append(
         '<input id="id_' +
@@ -196,6 +203,7 @@
     if (curTag.showLoader) {
       $(container).html('<div class="loader"></div>');
     }
+    
     $.when(contentFn()).then(function (content) {
       $(container).html(content);
       //Once content has rendered, scroll to it
@@ -238,10 +246,7 @@
 
     addResponse(true, curTag["chat-msg"], curTag.content || "");
 
-    if (curTag.tag && curTag.tag != "text" && curTag.tag != "custom") {
-        textResponse.prop('disabled', true);  
-        addOptions(curTag.children);
-    }
+
 
     if (curTag.submitBarStyle) {
       $("#ui-response").addClass(curTag.submitBarStyle);
@@ -255,7 +260,7 @@
     } else {
       $("#ui-response").removeClass();
       $("#ui-submit").html('<i class="fas fa-arrow-up"></i>');
-      //$("#ui-submit")addClass('no-hover');
+      
     }
 
     //support custom data tags (eg clickable map) by user-supplied 'renderer' returning html into options
@@ -310,6 +315,10 @@
     } else {
         
         textResponse.prop('disabled', false); 
+      $("#ui-options .selected").each(function (i, el) {
+        selected.push($(el).data("value"));
+        friendlySelected.push($(el).children(".text").text());
+      });
       $("#ui-control .selected").each(function (i, el) {
         selected.push($(el).data("value"));
         friendlySelected.push($(el).children(".text").text());
@@ -420,15 +429,7 @@
         );
     }
 
-    //var width = window.innerWidth();
-    // if(next==1 && window.innerWidth>768 ){
-    //     uiOptions.css("top", "-320px")
-    // }else if (next==2 && window.innerWidth>768 && clickCounter<1 ){
-    //     uiOptions.css("top", "-200px");
-    // }else if (clickCounter==1  && window.innerWidth>768){
-        
-    //     uiOptions.css("top", "-100px");
-    // }else uiOptions.css("top", "0px");
+
 
   };
 
