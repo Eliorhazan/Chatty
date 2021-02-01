@@ -420,9 +420,10 @@ and (-webkit-min-device-pixel-ratio: 2)  {
         
         padding: 0em;
     }
-
+    
     #back{
-        margin-bottom: 17px;
+        
+        margin-bottom: 11px;
     }
     #ui-submit:hover{
         background-color:white;

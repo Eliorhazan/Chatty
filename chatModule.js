@@ -255,6 +255,9 @@
     if ( $(`#add_content_uploadImage`).parents("#chat").length == 1 ) {
       $(`#add_content_uploadImage`).remove();
     }
+    if ( $(`#add_content_dropdown`).parents("#chat").length == 1 ) {
+      $(`#add_content_dropdown`).remove();
+    }
     if ( $(`#add_content_signPad`).parents("#chat").length == 1 ) {
       $(`#add_content_signPad`).remove();
       $(`input[id = id_signPad]`).remove();
