@@ -126,9 +126,6 @@ body {
     display: none;
 }
 
-#ui-response.full-submit #ui-submit {
-    width: 100%;
-}
 
 #ui-response.hide {
     overflow: hidden;
@@ -138,9 +135,10 @@ body {
 }
 
 #ui-response.full-submit #ui-submit {
+    height: auto;
     width: 100%;
-    font-size: 30px;
-    font-weight: 600;
+    font-size: 25px;
+    
     border-radius: 30px;
     background-color: #49ce7a;
 
@@ -387,8 +385,11 @@ body {
     }
 }
 @media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {
+    
+   
     .chat-response {
-        padding: 0.7em;
+       
+       
     }
     #ui-submit:hover{
         background-color:white;
@@ -410,13 +411,18 @@ body {
 
     }
 
+
 }
-@media only screen and (max-device-width: 480px)  {
+@media only screen and (min-device-width: 375px)  and (max-device-width: 667px) 
+and (-webkit-min-device-pixel-ratio: 2)  {
     .chat-context {
+        overflow-y: scroll;
+        
         padding: 0em;
     }
+
     #back{
-        margin-top: 10px;
+        margin-bottom: 17px;
     }
     #ui-submit:hover{
         background-color:white;
@@ -430,11 +436,15 @@ body {
     .ui-option{
         margin:10px;
     }
-    #chat {
+    .chat-response{
         
+    }
+    #chat {
+
+       
         padding-bottom: 0em;
     }
-
+   
     .chat-response.user:after {
         left: -1.5em;
     }

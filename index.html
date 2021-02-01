@@ -7,7 +7,7 @@
 
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      content="width=device-width, initial-scale=1"
     />
 
     <title>Chatty</title>
@@ -30,11 +30,11 @@
 
     <link rel="stylesheet" type="text/css" href="chat-style.css" />
 
-    <script src="assets/flashcanvas.js"></script>
+    <script src="assets/canvas/flashcanvas.js"></script>
 
-    <script src="assets/jquery.signaturepad.js"></script>
+    <script src="assets/canvas/jquery.signaturepad.js"></script>
 
-    <script src="assets/json2.min.js"></script>
+    <script src="assets/canvas/json2.min.js"></script>
 
     <script type="text/javascript" src="chatModule.js"></script>
 
@@ -44,22 +44,54 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
     />
 
-    <link href="assets/jquery.signaturepad.css?version=50" rel="stylesheet" />
+    <link href="assets/canvas/jquery.signaturepad.css" rel="stylesheet" />
 
-    <link href="assets/flashcanvas.swf" />
+    <link href="assets/canvas/flashcanvas.swf" />
+
+    <link rel="stylesheet" href="assets/dropdown/virtual-select.min.css" />
+
+    <script src="assets/dropdown/virtual-select.min.js"></script>
 
     <script type="text/javascript">
       var tags = [
-
-        // tag for user name
+        //tag for english text only
+        {
+          type: "input",
+          tag: "text",
+          name: "english",
+          "chat-msg": "ברוך הבא לצ'ט . מה שמך ? ",
+          validator:Chat.englishValidation,
+          invalid:"הכנס שם באנגלית בלבד"
+        },
+        //tag for dates
+        {
+          type: "input",
+          tag: "text",
+          name: "name",
+          "chat-msg": "הכנס תאריך בבקשה בפורמט dd/mm/yyyy או dd/mm/yy",
+          validator:Chat.dateValidation,
+          invalid:"תאריך לא תקין"
+        },
+        //tag for mobile and landline phone  
+        {
+          type: "input",
+          tag: "text",
+          name: "name",
+          "chat-msg": "הכנס מספר טלפון בבקשה",
+          validator:Chat.phoneNumberValidation,
+          invalid:"מספר טלפון לא תקין"
+        },
+        // tag for user name in hebrew
 
         {
           type: "input",
           tag: "text",
           name: "name",
           "chat-msg": "ברוך הבא לצ'ט . מה שמך ? ",
+          validator:Chat.hebrewValidation,
+          invalid:"הכנס שם בעברית בלבד"
         },
-        // tag for input number number
+      // tag for input number between 2 numbers
         {
           type: "input",
           tag: "text",
@@ -70,7 +102,7 @@
           min: 10,
           max: 20,
         },
-        // tag for id number
+        //tag for id number
         {
           type: "input",
           tag: "text",
@@ -80,6 +112,24 @@
           invalid: "מספר תעודת זהות לא תקין",
         },
 
+        //tag for dropdown
+        {
+          type: "input",
+          tag: "custom",
+          name: "dropdown",
+          submitBarStyle: "full-submit",
+          "chat-msg": "אנא בחר אחת מן האופציות?",
+          renderer:function(){
+            //add option here. the labal will send to user and the value to server
+            myOptions = [
+              { label: 'Options 1', value: '1' },
+              { label: 'Options 2', value: '2' },
+              { label: 'Options 3', value: '3' },
+            ]
+            Chat.dropDownRender(myOptions);
+          },
+          retriever:Chat.dropDownRetriever
+        },
         //tag for upload image from the user
         {
           type: "input",
@@ -99,7 +149,7 @@
           ImageUrl: "./data/image.jpg",
           content: Chat.imageFromRobotContent,
         },
-        // tag for email address
+        //tag for email address
         {
           type: "input",
           tag: "text",
@@ -181,7 +231,7 @@
 
           success: function (data) {
             //var msg = "";
-            if (data.selected == "בננה") {
+            if (data.selected == 2) {
               Chat.addTags([
                 {
                   //אפשר להוסיף  סוג של טאג שאתה רוצה
@@ -201,7 +251,7 @@
                   "chat-msg": "הודעה אחרי בחירת תפוח",
                   callback: function () {
                     //עשה כאן מה שאתה צריך להוסיף טאג או פעולה אחרת לפני הצגת הודעה
-                    alert(data.selected);
+                    //alert(data.selected);
                   },
                 },
               ]);
@@ -214,14 +264,14 @@
                   "chat-msg": "הודעה אחרי בחירת בורקס",
                   callback: function () {
                     //פונקציה שנקראת לפני הצגת ההודעה
-                    alert(data.selected);
+                    //alert(data.selected);
                   },
                 },
               ]);
             }
           },
         },
-        
+
         //the last tag
         {
           type: "msg",

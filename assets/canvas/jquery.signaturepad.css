@@ -139,9 +139,19 @@
 
   border: 1px solid #ccc;
 }
+@media only screen and (min-device-width: 760px){
+  .pad{
+    width: fit-content;
+  }
+} 
 @media only screen and (max-device-width: 400px){
   .pad{
-    width: 355px;
+    width: 315px;
+  }
+} 
+@media only screen and (min-device-width: 401px) and  (max-device-width: 440px) {
+  .pad{
+    width: 349px;
   }
 } 
 @media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {

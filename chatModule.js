@@ -12,28 +12,23 @@
   var textResponse;
   var msgDelay = 1000;
   var backButton;
-  var clickCounter =0 ;
+  var tempTagsLength;
   self.start = function (ctx, tgs) {
     context = ctx;
     tags = tgs;
     next = 0;
     data = {};
-
+    tempTagsLength = tags.length;
     context.empty();
     context.addClass("chat-context");
     context.append(
-      '<div id="chat"></div><div id="ui-control"><button id="back">חזור שאלה</button><div id="ui-options"></div>' +
+      '<div id="chat"></div><div id="ui-control"><button id="back" >חזור שאלה</button><div id="ui-options"></div>' +
         '<div id="ui-response"><input id="response-text" /><div id="ui-submit"><i style="color:black;" class="fas fa-arrow-up"></i></div></div></div>'
     );
     chat = $("#chat");
     backButton = $("#back");
     textResponse = $("#response-text");
     uiOptions = $("#ui-options");
-    // $(window).on('resize', function(){
-    //     var win = $(this); //this = window
-    //     if (win.width() <= 1130) { uiOptions.css("top", "-250px"); }
-    //     if (win.width() <= 700) { uiOptions.css("top", "-150px"); }
-    // });
     $("#ui-submit").click(submitInput);
     uiOptions.on("ChatResponseLoaded", function (e) {
         
@@ -47,7 +42,7 @@
     uiOptions.on("click", ".ui-option", function () {
       $(this).toggleClass("selected");
       if (curTag.tag == "radio" && $(this).hasClass("selected")) {
-
+        backButton.hide();
         submitInput();
       }
     });
@@ -66,7 +61,7 @@
     nextTag();
   };
   var buttonBack = function (e) {
-      clickCounter++;
+      
       e.preventDefault();
       nextTag(true);
   }
@@ -97,35 +92,61 @@
         '<div style="float:right" class=" typing-indicator "><span></span><span></span><span></span></div>'
       );
       chat.append(loader);
-
+      $(loader).velocity("scroll", { container: chat, duration: 500 });
       setTimeout(function () {
         $(".typing-indicator").remove();
 
         appendResponse(true, msg, contentFn);
       }, 2000);
     } else {
+      backButton.hide();
       appendResponse(false, msg, contentFn);
     }
   };
 
-function appendResponse(isRobot, msg, contentFn) {
+ function appendResponse(isRobot, msg, contentFn) {
     var chatResponse = $(` <div class="chat-response ${isRobot ? "robot " : "user"}">
     <p>${msg}</p>
-    <div  class="add-content"></div></div><div id="add_content_${curTag.name}"></div>`);
+    <div  class="add-content"></div></div>`);
     
 
     chat.append(chatResponse);
-    
-    if (curTag.tag =="radio" && isRobot) {
-        textResponse.prop('disabled', true);  
-        addOptions(curTag.children);
-        addContent = $(`#add_content_${curTag.name}`);
+    //var addContent = $(``);
+    if ((curTag.tag =="radio" || curTag.tag=="custom"  ) && isRobot) {
+        
+      if(curTag.tag =="radio"){
+        var addContent = $(`<div id="add_content_${curTag.name}"></div>`);
+        textResponse.prop('disabled', true);
+        setTimeout(() => {
+          $(addContent).velocity("scroll", { container: chat, duration: 500 });
+          addOptions(curTag.children);
+        }, 1000);  
         addContent.append(uiOptions);
         $("#back").css('margin-bottom','17px');
-        chat.append(addContent);
+      }else if(curTag.name=="uploadImage") {
+        var addContent = $(`<div id="add_content_${curTag.name}"></div>`);
+        setTimeout(() => {
+          addContent.append($("#uploadImage"));
+        }, 1000);
+      }else if(curTag.name == "signPad"){
+        var addContent = $(`<div id="add_content_${curTag.name}"></div>`);
+        setTimeout(() => {
+          addContent.append($("#signPad"));
+        }, 1000);
+      }
+      else if (curTag.name == "dropdown"){
+        var addContent = $(`<div style="direction:rtl" id="add_content_${curTag.name}"></div>`);
+        
+        addContent.append($("#select"));
+        
+       
+      }
+      chat.append(addContent);
+     
     }
 
-    if (!isRobot && (curTag.tag == "text" || curTag.tag == "radio")) {
+    if (!isRobot && (curTag.tag == "text" || curTag.tag == "radio" || curTag.name =="dropdown"  )) {
+
       $("#Chatform").append(
         '<input id="id_' +
           curTag.name +
@@ -145,9 +166,11 @@ function appendResponse(isRobot, msg, contentFn) {
           );
           $('input[name='+curTag.name+']').val(data[curTag.name])
 
-        }else{
-            $('input[name='+curTag.name+']').val(data[curTag.name])
-        }
+      }else{
+          $('input[name='+curTag.name+']').val(data[curTag.name])
+      }
+
+        
     
     }
     
@@ -217,25 +240,43 @@ function appendResponse(isRobot, msg, contentFn) {
   self.getData = function () {
     return data;
   };
-
+  var isBackClicked = function () {
+    
+    next = next-2;
+    if(tags[next].type == "msg"){
+        next = next-1;
+    }
+    var tempTag = tags[next];
+    for (let i = $(".chat-response").length; i > 0; i--) {
+      if($(".chat-response").eq(i-1).hasClass("robot")){
+        $(".chat-response").eq(i-1).remove();
+      }else break;
+    }
+    if ( $(`#add_content_uploadImage`).parents("#chat").length == 1 ) {
+      $(`#add_content_uploadImage`).remove();
+    }
+    if ( $(`#add_content_signPad`).parents("#chat").length == 1 ) {
+      $(`#add_content_signPad`).remove();
+      $(`input[id = id_signPad]`).remove();
+    }
+    $(`#${curTag.name}`).remove();
+    if(curTag.name == 'selected'){ 
+        removeOptions();
+    }
+    for (let i = 0; i< tags.length; i++) {
+      if(tags[i].name == "selected" && next>=i && tempTagsLength<tags.length){
+          tags.splice(i+1,1);
+          break;
+      }
+    }
+    textResponse.prop('disabled', false); 
+    textResponse.attr("readonly", false);
+  }
   var nextTag = async function (isPreTag = false) {
 
 
     if(isPreTag){
-        next = next-2;
-
-        if(tags[next].type == "msg"){
-            next = next-1;
-        }
-        $(".chat-response.robot").last().remove();
-
-        $(`#${curTag.name}`).remove();
-        if(curTag.name == 'selected'){
-            removeOptions();
-        }
-        textResponse.prop('disabled', false); 
-        textResponse.attr("readonly", false);
-        //backButton.prop('disabled', true);
+      isBackClicked();
     }
     waiting = false;
     curTag = tags[next++];
@@ -256,7 +297,7 @@ function appendResponse(isRobot, msg, contentFn) {
       else if(curTag.name == "uploadImage")
         $("#ui-submit").html("שלח תמונה");
       else
-        $("#ui-submit").html("שלח קובץ");
+        $("#ui-submit").html("שלח בחירה");
     } else {
       $("#ui-response").removeClass();
       $("#ui-submit").html('<i class="fas fa-arrow-up"></i>');
@@ -282,12 +323,12 @@ function appendResponse(isRobot, msg, contentFn) {
 
     //set placeholder to user spec or default
     textResponse.attr("placeholder", curTag.placeholder || "הכנס טקסט כאן");
-    
+    backButton.show();
     //set timeout if tag type is 'msg'
     if (curTag.type == "msg") {
       window.setTimeout(nextTag, curTag.delay || 2100);
     }
-
+    
     if (curTag.callback) {
        curTag.callback(data);
     }
@@ -301,7 +342,7 @@ function appendResponse(isRobot, msg, contentFn) {
 
     var selected = [];
     var friendlySelected = [];
-
+    
     if (curTag.tag == "text") {
       selected = friendlySelected = textResponse.val();
     }
@@ -341,11 +382,9 @@ function appendResponse(isRobot, msg, contentFn) {
     }
 
     //if no input, throw error
-    if (
-      selected.length == 0 ||
-      (curTag.validator && !curTag.validator(selected))
-    ) {
+    if ( selected.length == 0 || (curTag.validator && !curTag.validator(selected))) {
       if (!curTag.optional) {
+        addResponse(false,selected,"");
         return invalidInput(curTag.invalid || "קלט לא תקין , נסה שוב");
       }
       friendlySelected = "קלט לא תקין , נסה שוב";
@@ -492,7 +531,7 @@ function appendResponse(isRobot, msg, contentFn) {
     $("#uploadImage").append('<div class="upload-btn-wrapper"></div >');
     $(".upload-btn-wrapper").append(
       '<button class="btn">בחירת קובץ</button><input  type="file" name=' +
-        curTag.name + '	&nbsp;'+
+        curTag.name + 
         " />" 
     );
     $("#uploadImage").append(
@@ -505,6 +544,7 @@ function appendResponse(isRobot, msg, contentFn) {
     document
       .querySelector("input[name=" + curTag.name + "]")
       .addEventListener("change", function () {
+        backButton.hide();
         
         $("#img_" + curTag.name).show();
 
@@ -514,9 +554,10 @@ function appendResponse(isRobot, msg, contentFn) {
           img.onload = imageIsLoaded;
         }
       });
-
+      
     var imageIsLoaded = function () {
       window.uploadImage = img.src;
+      //$("Chatform").append($("input[name=" + curTag.name + "]"))
     };
   };
 
@@ -524,7 +565,7 @@ function appendResponse(isRobot, msg, contentFn) {
     var api = $(".sigPad").signaturePad();
     var image = window.innerWidth > 768 ? new Image(120, 90) :  new Image(90,70);
     image.src = api.getSignatureImage();
-  
+    $("input[name=signPadJson]").remove();
     $("#Chatform").append(
       `<input type="hidden"  id="id_${curTag.name}" style="display:none" name= ${curTag.name} /> `
     );
@@ -542,6 +583,7 @@ function appendResponse(isRobot, msg, contentFn) {
     image.src = window.uploadImage;
     $("#myImg").remove();
     $("#uploadImage").hide();
+    
     return {
       data: image,
       friendly: "העלאת תמונה",
@@ -564,6 +606,81 @@ function appendResponse(isRobot, msg, contentFn) {
           return false;
       }
       return (number > curTag.min && number < curTag.max);
+  }
+  self.phoneNumberValidation = function(){
+    var phoneNumber = textResponse.val();
+    var regex = /^0(5[^7]|[2-4]|[8-9]|7[0-9])-?[0-9]{7}$/;
+    return regex.test(phoneNumber);
+  }
+  self.hebrewValidation = function() {
+    var hebrewWord = textResponse.val();
+    var regex = /^[\u0590-\u05fe]+$/i;
+    return regex.test(hebrewWord);
+  }
+  
+  self.dateValidation = function(){
+    var date = textResponse.val();
+    var regex =/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})|([0-9]{2})$/;
+    var pdate = date.split('/');
+  
+    var dd = parseInt(pdate[0]);
+    var mm  = parseInt(pdate[1]);
+    var yy = parseInt(pdate[2]);
+    // Create list of days of a month [assume there is no leap year by default]
+    var ListofDays = [31,28,31,30,31,30,31,31,30,31,30,31];
+    if(mm>12){
+      return false;
+    }
+    if (mm==1 || mm>2)
+    {
+      if (dd>ListofDays[mm-1])
+        return false;
+    }
+    if (mm==2)
+    {
+      var lyear = false;
+      if ( (!(yy % 4) && yy % 100) || !(yy % 400)) 
+      {
+        lyear = true;
+      }
+      if ((lyear==false) && (dd>=29))
+        return false;
+      if ((lyear==true) && (dd>29))
+        return false;
+        
+      
+    }
+    return regex.test(date);
+  }
+   
+  self.dropDownRender = function(dropDownOptions){
+    var element = $('<div  id="select"></div>');
+    $("#ui-control").prepend(element);
+    VirtualSelect.init({
+      ele: "#select",
+      options: dropDownOptions
+    });
+  }
+  self.dropDownRetriever = function () {
+    var choosed = $(`#select`).val();
+    for (let index = 0; index < myOptions.length; index++) {
+      const element = myOptions[index];
+      if(element.value == choosed){
+        var result = element.label;
+      }
+      
+    }
+    $(`#select`).remove();
+    return {
+        data: choosed,
+        friendly:result
+    };
+  }
+
+  self.englishValidation = function () {
+    var word = textResponse.val();
+    var regex = /^[a-zA-Z\u0080-\u024F]+$/i;
+    return regex.test(word);
   }
   return self;
 })();
