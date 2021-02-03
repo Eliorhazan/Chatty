@@ -13,6 +13,7 @@
   var msgDelay = 1000;
   var backButton;
   var tempTagsLength;
+  var signPadContent;
   self.start = function (ctx, tgs) {
     context = ctx;
     tags = tgs;
@@ -130,7 +131,9 @@
         }, 1000);
       }else if(curTag.name == "signPad"){
         var addContent = $(`<div id="add_content_${curTag.name}"></div>`);
+        $("#signPad").show();
         setTimeout(() => {
+          
           addContent.append($("#signPad"));
         }, 1000);
       }
@@ -499,9 +502,9 @@
 
   self.signPadRender = function () {
     $("#ui-control").prepend(
-      '<div style="direction:rtl" id="signPad"></div>' 
+      '<div style="direction:rtl;display:none" id="signPad"></div>' 
     );
-
+    
     $("#signPad").append('<div class="sigPad"></div>');
 
     $(".sigPad").append('<ul class="sigNav"></ul>');

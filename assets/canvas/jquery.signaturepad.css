@@ -1,4 +1,4 @@
-@font-face {
+ @font-face {
   font-family: 'Journal';
   src: url('journal.eot');
   src: url('journal.eot?#iefix') format('embedded-opentype'),
@@ -139,34 +139,7 @@
 
   border: 1px solid #ccc;
 }
-@media only screen and (min-device-width: 760px){
-  .pad{
-    width: fit-content;
-  }
-} 
-@media only screen and (max-device-width: 400px){
-  .pad{
-    width: 315px;
-  }
-} 
-@media only screen and (min-device-width: 401px) and  (max-device-width: 440px) {
-  .pad{
-    width: 349px;
-  }
-} 
-@media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {
-    .sigPad{
-      position: relative;
-      margin-bottom: -90px;
-    }
-    .pad{
-     
-      width: fit-content;
-    }
-    .sigNav a{
-      font-size:small;
-    }
-}
+
 .sigWrapper.current {
   width: fit-content;
   border-color: #666;
@@ -235,3 +208,38 @@ p.error {
   color: #fff;
   font-weight: bold;
 }
+@media only screen and (min-device-width: 760px){
+  .pad{
+    width: fit-content;
+  }
+} 
+@media only screen and (max-device-width: 400px){
+  .pad{
+    width: 315px;
+  }
+} 
+@media only screen and (min-device-width: 401px) and  (max-device-width: 440px) {
+  .pad{
+    width: 349px;
+  }
+} 
+
+@media only screen and (min-device-width: 375px)  and (max-device-width: 667px) and (orientation:landscape){
+  .pad{
+    width: 310px;
+    height: 120px;
+  }
+}
+/* @media only screen and (min-device-width: 482px) and (max-device-width: 1024px) and (orientation:landscape) {
+    .sigPad{
+      position: relative;
+      margin-bottom: -90px;
+    }
+    .pad{
+     
+      width: fit-content;
+    }
+    .sigNav a{
+      font-size:small;
+    }
+} */
